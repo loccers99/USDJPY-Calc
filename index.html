@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nas_calc.html</title>
+    <title>USDJPY_calc.html</title>
 </head>
 <body>
-    <h2>Nasdaq 100 Trade Calculator 3.5 and 8</h2>
+    <h2>USDJPY Trade Calculator 2.5 and 5.5</h2>
     <form id="tradeForm">
         <label>Entry Price: <input type="number" id="entryPrice" required></label><br><br>
         <label>ATR: <input type="number" id="atr" required></label><br><br>
@@ -30,8 +30,8 @@
             const accountBalance = parseFloat(document.getElementById('accountBalance').value);
             const tradeDirection = document.getElementById('tradeDirection').value;
 
-            const stopMultiplier = 3.5;
-            const limitMultiplier = 8;
+            const stopMultiplier = 2.5;
+            const limitMultiplier = 5.5;
             const riskPercent = 0.02;
 
             const stopDistance = atr * stopMultiplier;
