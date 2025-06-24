@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nas_calc.html</title>
+</head>
+<body>
+    <h2>Nasdaq 100 Trade Calculator 3.5 and 8</h2>
+    <form id="tradeForm">
+        <label>Entry Price: <input type="number" id="entryPrice" required></label><br><br>
+        <label>ATR: <input type="number" id="atr" required></label><br><br>
+        <label>Account Balance: <input type="number" id="accountBalance" required></label><br><br>
+        <label>Trade Direction:
+            <select id="tradeDirection">
+                <option value="long">Long</option>
+                <option value="short">Short</option>
+            </select>
+        </label><br><br>
+        <button type="button" onclick="calculateTrade()">Calculate</button>
+    </form>
+
+    <h3>Results:</h3>
+    <div id="results"></div>
+
+    <script>
+        function calculateTrade() {
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+            const atr = parseFloat(document.getElementById('atr').value);
+            const accountBalance = parseFloat(document.getElementById('accountBalance').value);
+            const tradeDirection = document.getElementById('tradeDirection').value;
+
+            const stopMultiplier = 3.5;
+            const limitMultiplier = 8;
+            const riskPercent = 0.02;
+
+            const stopDistance = atr * stopMultiplier;
+            const limitDistance = atr * limitMultiplier;
+
+            let stopPrice, limitPrice;
+
+            if (tradeDirection === 'long') {
+                stopPrice = entryPrice - stopDistance;
+                limitPrice = entryPrice + limitDistance;
+            } else {
+                stopPrice = entryPrice + stopDistance;
+                limitPrice = entryPrice - limitDistance;
+            }
+
+            const riskAmount = accountBalance * riskPercent;
+            const contractSize = (riskAmount / stopDistance).toFixed(2);
+
+            document.getElementById('results').innerHTML = `
+                <p>Stop Price: <strong>${stopPrice.toFixed(2)}</strong></p>
+                <p>Limit Price: <strong>${limitPrice.toFixed(2)}</strong></p>
+                <p>Risk Amount: <strong>${riskAmount.toFixed(2)}</strong></p>
+                <p>Contract Size: <strong>${contractSize}</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>
