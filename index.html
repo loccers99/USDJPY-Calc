@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDJPY_calc.html</title>
+    <title>USD/JPY Trade Calculator</title>
 </head>
 <body>
-    <h2>USDJPY Trade Calculator 2.5 and 5.5</h2>
+    <h2>USD/JPY Trade Calculator</h2>
     <form id="tradeForm">
-        <label>Entry Price: <input type="number" id="entryPrice" required></label><br><br>
-        <label>ATR: <input type="number" id="atr" required></label><br><br>
+        <label>Entry Price: <input type="number" id="entryPrice" step="0.01" required></label><br><br>
+        <label>ATR: <input type="number" id="atr" step="0.01" required></label><br><br>
         <label>Account Balance: <input type="number" id="accountBalance" required></label><br><br>
+        <label>Leverage: <input type="number" id="leverage" required value="30"></label><br><br>
         <label>Trade Direction:
             <select id="tradeDirection">
                 <option value="long">Long</option>
@@ -28,33 +29,43 @@
             const entryPrice = parseFloat(document.getElementById('entryPrice').value);
             const atr = parseFloat(document.getElementById('atr').value);
             const accountBalance = parseFloat(document.getElementById('accountBalance').value);
+            const leverage = parseFloat(document.getElementById('leverage').value);
             const tradeDirection = document.getElementById('tradeDirection').value;
 
             const stopMultiplier = 2.5;
             const limitMultiplier = 5.5;
+            const partialTPMultiplier = 3.5;
             const riskPercent = 0.02;
 
             const stopDistance = atr * stopMultiplier;
             const limitDistance = atr * limitMultiplier;
+            const partialTPDistance = atr * partialTPMultiplier;
 
-            let stopPrice, limitPrice;
+            let stopPrice, limitPrice, partialTPPrice;
 
             if (tradeDirection === 'long') {
                 stopPrice = entryPrice - stopDistance;
                 limitPrice = entryPrice + limitDistance;
+                partialTPPrice = entryPrice + partialTPDistance;
             } else {
                 stopPrice = entryPrice + stopDistance;
                 limitPrice = entryPrice - limitDistance;
+                partialTPPrice = entryPrice - partialTPDistance;
             }
 
             const riskAmount = accountBalance * riskPercent;
-            const contractSize = (riskAmount / stopDistance).toFixed(2);
+            const contractSize = riskAmount / stopDistance;
+            const notionalValue = contractSize * entryPrice;
+            const marginRequired = notionalValue / leverage;
 
             document.getElementById('results').innerHTML = `
                 <p>Stop Price: <strong>${stopPrice.toFixed(2)}</strong></p>
                 <p>Limit Price: <strong>${limitPrice.toFixed(2)}</strong></p>
+                <p>Partial Take Profit Price: <strong>${partialTPPrice.toFixed(2)}</strong></p>
                 <p>Risk Amount: <strong>${riskAmount.toFixed(2)}</strong></p>
-                <p>Contract Size: <strong>${contractSize}</strong></p>
+                <p>Contract Size (units): <strong>${contractSize.toFixed(0)}</strong></p>
+                <p>Notional Value: <strong>${notionalValue.toFixed(2)}</strong></p>
+                <p>Margin Required (${leverage}x leverage): <strong>${marginRequired.toFixed(2)}</strong></p>
             `;
         }
     </script>
